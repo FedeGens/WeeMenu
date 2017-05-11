@@ -18,7 +18,7 @@ class DemoViewController: WeeMenuController {
         super.animateStatusBar = false
         super.rootViewAnimation = .none
         super.rootViewBackgroundColor = .red
-        super.menuPosition = .front
+        super.menuPosition = .behind
         
         super.setWeeMenu(ViewController: vc)
     }

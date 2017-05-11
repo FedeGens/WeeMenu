@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
+public class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     
     private var menuLeftConst: NSLayoutConstraint!
     private var containerLeftConst: NSLayoutConstraint!
@@ -53,7 +53,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    override open func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         // Change RootView
         myView = UIView()
@@ -82,6 +82,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
             self.view.bringSubview(toFront: weeMenuView)
         } else {
             self.view.bringSubview(toFront: containerView)
+            self.view.bringSubview(toFront: weeMenuShadowView)
         }
         
         setWeeMenuControllerConstraints()
@@ -129,7 +130,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     func setWeeMenuControllerConstraints() {
         //Shadow constraints
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
-        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .centerX, relatedBy: .equal, toItem: ((menuPosition == .front) ? self.view : self.containerView), attribute: .centerX, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .top, relatedBy: .equal, toItem: self.topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: (overlapStatusBar) ? -20 : 0))
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .bottom, relatedBy: .equal, toItem: self.bottomLayoutGuide, attribute: .top, multiplier: 1.0, constant: 0))
         
@@ -195,9 +196,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         switch screenEdgeRecognizer.state.rawValue {
         case 1:
             firstLocationX = screenEdgeRecognizer.location(in: self.view).x
-            if menuPosition == .front {
-                weeMenuShadowView.isHidden = false
-            }
+            weeMenuShadowView.isHidden = false
             showStatusBar(canShow: false)
             break
         case 2:
@@ -205,7 +204,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
             checkOpenMenuOrContainer(offsetX: offsetX)
             break
         case 3:
-            showMenu(canShow: (menuLeftConst.constant > -weeMenuView.frame.width+80) ? true : false, duration: animationDuration - Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
+            if menuPosition == .front {
+                showMenu(canShow: (menuLeftConst.constant > -weeMenuView.frame.width+80) ? true : false, duration: animationDuration - Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
+            } else {
+                showMenu(canShow: (containerLeftConst.constant > 80) ? true : false, duration: Double((weeMenuView.frame.width-containerLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
+            }
             break
         default:
             print("default")
@@ -221,10 +224,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
                 containerLeftConst.constant = weeMenuView.frame.width
             }
         } else {
+            let percentage = offsetX/weeMenuView.frame.width
+            self.weeMenuShadowView.alpha = percentage*0.6
+            
             if menuPosition == .front {
                 menuLeftConst.constant = -weeMenuView.frame.width+offsetX
-                let percentage = offsetX/weeMenuView.frame.width
-                self.weeMenuShadowView.alpha = percentage*0.6
                 animateRootView(percentage: percentage, all: true)
             } else {
                 containerLeftConst.constant = offsetX
@@ -242,6 +246,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         if !isMenuOpened {
             return
         }
+        
         switch swipeRecognizer.state.rawValue {
         case 1:
             firstLocationX = swipeRecognizer.location(in: self.view).x
@@ -255,7 +260,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
             checkCloseMenuOrContainer(offsetX: offsetX)
             break
         case 3:
-            showMenu(canShow: (menuLeftConst.constant > -80) ? true : false, duration: Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
+            if menuPosition == .front {
+                showMenu(canShow: (menuLeftConst.constant > -80) ? true : false, duration: Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
+            } else {
+                showMenu(canShow: (containerLeftConst.constant > weeMenuView.frame.width-80) ? true : false, duration: Double(containerLeftConst.constant/weeMenuView.frame.width) * animationDuration)
+            }
             break
         default:
             print("default")
@@ -271,10 +280,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
                 containerLeftConst.constant = self.weeMenuView.frame.width
             }
         } else {
+            let percentage = -offsetX/weeMenuView.frame.width
+            self.weeMenuShadowView.alpha = 0.6 - percentage*0.6
+            
             if menuPosition == .front {
                 menuLeftConst.constant = offsetX
-                let percentage = -offsetX/weeMenuView.frame.width
-                self.weeMenuShadowView.alpha = 0.6 - percentage*0.6
                 animateRootView(percentage: 1-percentage, all: true)
             } else {
                 containerLeftConst.constant = self.weeMenuView.frame.width + offsetX
@@ -349,16 +359,16 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         })
     }
     
-    override open var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+    override public var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return UIStatusBarAnimation.slide
     }
-    override open var prefersStatusBarHidden: Bool {
+    override public var prefersStatusBarHidden: Bool {
         return isStatusBarHidden
     }
     
     
     //MARK: Detect Rotation
-    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if !isMenuOpened {
             weeMenuView.isHidden = true
         }
