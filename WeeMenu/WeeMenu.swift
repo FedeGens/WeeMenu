@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
+open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     
     private var menuLeftConst: NSLayoutConstraint!
     private var containerLeftConst: NSLayoutConstraint!
@@ -53,7 +53,7 @@ public class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         // Change RootView
         myView = UIView()
@@ -359,16 +359,16 @@ public class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         })
     }
     
-    override public var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+    override open var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return UIStatusBarAnimation.slide
     }
-    override public var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return isStatusBarHidden
     }
     
     
     //MARK: Detect Rotation
-    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override open func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if !isMenuOpened {
             weeMenuView.isHidden = true
         }
