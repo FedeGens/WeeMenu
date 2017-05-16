@@ -203,7 +203,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
             let offsetX = screenEdgeRecognizer.location(in: self.view).x - firstLocationX
             checkOpenMenuOrContainer(offsetX: offsetX)
             break
-        case 3:
+        case 3,4:
             if menuPosition == .front {
                 showMenu(canShow: (menuLeftConst.constant > -weeMenuView.frame.width+80) ? true : false, duration: animationDuration - Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
             } else {
@@ -259,7 +259,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
             let offsetX = swipeRecognizer.location(in: self.view).x - firstLocationX
             checkCloseMenuOrContainer(offsetX: offsetX)
             break
-        case 3:
+        case 3,4:
             if menuPosition == .front {
                 showMenu(canShow: (menuLeftConst.constant > -80) ? true : false, duration: Double((weeMenuView.frame.width+menuLeftConst.constant)/weeMenuView.frame.width) * animationDuration)
             } else {
@@ -330,10 +330,20 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if screenEdgeRecognizer.state.rawValue >= 0 && screenEdgeRecognizer.state.rawValue <= 3 && gestureRecognizer != screenEdgeRecognizer {
+            return false
+        }
         if !isMenuOpened && gestureRecognizer == swipeRecognizer {
             return false
         }
         return true
+    }
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == screenEdgeRecognizer {
+            return true
+        }
+        return false
     }
     
     
