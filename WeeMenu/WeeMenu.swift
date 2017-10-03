@@ -31,6 +31,8 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     public var shadowVisible: Bool = true
     public var rootViewAnimation: RootViewAnimationType = .scale
     public var menuPosition: WeeMenuPosition = .front
+    public var openSwipeEnabled: Bool = true
+    public var closeSwipeEnabled: Bool = true
     
     public var animateStatusBar: Bool = true {
         didSet {
@@ -60,6 +62,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         myView.frame = view.frame
         containerView = self.view
         self.view = myView
+        self.view.clipsToBounds = true
         self.view.addSubview(containerView)
     }
     
@@ -92,14 +95,18 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         let tap = UITapGestureRecognizer(target: self, action:#selector(handleBlurTap))
         weeMenuShadowView.addGestureRecognizer(tap)
         
-        screenEdgeRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(self.openMenuFromSwipe))
-        screenEdgeRecognizer.edges = .left
-        screenEdgeRecognizer.delegate = self
-        self.view.addGestureRecognizer(screenEdgeRecognizer)
+        if openSwipeEnabled {
+            screenEdgeRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(self.openMenuFromSwipe))
+            screenEdgeRecognizer.edges = .left
+            screenEdgeRecognizer.delegate = self
+            self.view.addGestureRecognizer(screenEdgeRecognizer)
+        }
         
-        swipeRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.closeMenuFromSwipe))
-        swipeRecognizer.delegate = self
-        self.view.addGestureRecognizer(swipeRecognizer)
+        if closeSwipeEnabled {
+            swipeRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.closeMenuFromSwipe))
+            swipeRecognizer.delegate = self
+            self.view.addGestureRecognizer(swipeRecognizer)
+        }
     }
     
     public func openMenu() {
@@ -183,12 +190,12 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         animateRootViewFrom(canShow: canShow)
     }
     
-    func handleBlurTap() {
+    @objc func handleBlurTap() {
         showMenu(canShow: false, duration: animationDuration)
     }
     
     //Open Menu
-    func openMenuFromSwipe() {
+    @objc func openMenuFromSwipe() {
         if isMenuOpened {
             return
         }
@@ -242,7 +249,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     //Close Menu
-    func closeMenuFromSwipe() {
+    @objc func closeMenuFromSwipe() {
         if !isMenuOpened {
             return
         }
@@ -330,7 +337,8 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if screenEdgeRecognizer.state.rawValue >= 0 && screenEdgeRecognizer.state.rawValue <= 3 && gestureRecognizer != screenEdgeRecognizer {
+        
+        if screenEdgeRecognizer != nil && screenEdgeRecognizer.state.rawValue >= 0 && screenEdgeRecognizer.state.rawValue <= 3 && gestureRecognizer != screenEdgeRecognizer {
             return false
         }
         if !isMenuOpened && gestureRecognizer == swipeRecognizer {
