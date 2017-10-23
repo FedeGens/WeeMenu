@@ -67,6 +67,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     public func setWeeMenu(ViewController vc: UIViewController) {
+        self.addChildViewController(vc)
         weeMenuView = vc.view
         weeMenuView.clipsToBounds = true
         

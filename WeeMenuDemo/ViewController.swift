@@ -15,7 +15,7 @@ class DemoViewController: WeeMenuController {
         
         let vc = self.storyboard!.instantiateViewController(withIdentifier: "gattiniController")
         super.roundCorners = false
-        super.animateStatusBar = false
+        super.animateStatusBar = true
         super.rootViewAnimation = .none
         super.rootViewBackgroundColor = .red
         super.menuPosition = .behind
