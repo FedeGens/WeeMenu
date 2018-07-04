@@ -139,13 +139,13 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         //Shadow constraints
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .width, relatedBy: .equal, toItem: self.view, attribute: .width, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .centerX, relatedBy: .equal, toItem: ((menuPosition == .front) ? self.view : self.containerView), attribute: .centerX, multiplier: 1.0, constant: 0))
-        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .top, relatedBy: .equal, toItem: self.topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: (overlapStatusBar) ? -20 : 0))
-        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .bottom, relatedBy: .equal, toItem: self.bottomLayoutGuide, attribute: .top, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .top, relatedBy: .equal, toItem: self.topLayoutGuide, attribute: .top, multiplier: 1.0, constant: (overlapStatusBar) ? -20 : 0))
+        self.view.addConstraint(NSLayoutConstraint(item: weeMenuShadowView, attribute: .bottom, relatedBy: .equal, toItem: self.bottomLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0))
         
         //Menu constraints
         self.view.addConstraint(NSLayoutConstraint(item: weeMenuView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: self.view.frame.width*0.8))
-        self.view.addConstraint(NSLayoutConstraint(item: weeMenuView, attribute: .top, relatedBy: .equal, toItem: self.topLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: (overlapStatusBar) ? -20 : 0))
-        self.view.addConstraint(NSLayoutConstraint(item: weeMenuView, attribute: .bottom, relatedBy: .equal, toItem: self.bottomLayoutGuide, attribute: .top, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: weeMenuView, attribute: .top, relatedBy: .equal, toItem: self.topLayoutGuide, attribute: .top, multiplier: 1.0, constant: (overlapStatusBar) ? -20 : 0))
+        self.view.addConstraint(NSLayoutConstraint(item: weeMenuView, attribute: .bottom, relatedBy: .equal, toItem: self.bottomLayoutGuide, attribute: .bottom, multiplier: 1.0, constant: 0))
         
         menuLeftConst = NSLayoutConstraint(item: weeMenuView, attribute: .leading, relatedBy: .equal, toItem: self.view, attribute: .leading, multiplier: 1.0, constant: (menuPosition == .front) ? -self.view.frame.width*0.8 : 0)
         self.view.addConstraint(menuLeftConst)
