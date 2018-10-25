@@ -196,7 +196,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     //Open Menu
-    @objc func openMenuFromSwipe() {
+    @objc open func openMenuFromSwipe() {
         if isMenuOpened {
             return
         }
