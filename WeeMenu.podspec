@@ -6,7 +6,7 @@ s.ios.deployment_target = '8.0'
 s.name = "WeeMenu"
 s.summary = "WeeMenu is a fast and easy-to-use SideMenu for iOS."
 s.requires_arc = true
-s.swift_version = '4.0'
+s.swift_version = '4.2'
 
 # 2
 s.version = "0.0.10"
