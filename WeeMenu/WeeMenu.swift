@@ -33,6 +33,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     public var menuPosition: WeeMenuPosition = .front
     public var openSwipeEnabled: Bool = true
     public var closeSwipeEnabled: Bool = true
+    public var shadowColor: UIColor = .black
     
     public var animateStatusBar: Bool = true {
         didSet {
@@ -67,11 +68,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     public func setWeeMenu(ViewController vc: UIViewController) {
-        self.addChildViewController(vc)
+        self.addChild(vc)
         weeMenuView = vc.view
         weeMenuView.clipsToBounds = true
         
-        weeMenuShadowView.backgroundColor = .black
+        weeMenuShadowView.backgroundColor = shadowColor
         weeMenuShadowView.alpha = 0
         weeMenuShadowView.isHidden = true
         
@@ -83,10 +84,10 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         self.view.addSubview(weeMenuView)
         
         if menuPosition == .front {
-            self.view.bringSubview(toFront: weeMenuView)
+            self.view.bringSubviewToFront(weeMenuView)
         } else {
-            self.view.bringSubview(toFront: containerView)
-            self.view.bringSubview(toFront: weeMenuShadowView)
+            self.view.bringSubviewToFront(containerView)
+            self.view.bringSubviewToFront(weeMenuShadowView)
         }
         
         setWeeMenuControllerConstraints()
@@ -322,7 +323,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     func animateRootViewFrom(canShow: Bool) {
         if rootViewAnimation == .scale {
             let animation = CABasicAnimation(keyPath: "cornerRadius")
-            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             animation.fromValue = self.containerView.layer.cornerRadius
             animation.toValue = (canShow) ? 8 : 0
             animation.duration = 0.3
@@ -333,11 +334,11 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
     
     
     //MARK: Gesture Delegate
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    open func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         
         if screenEdgeRecognizer != nil && screenEdgeRecognizer.state.rawValue >= 0 && screenEdgeRecognizer.state.rawValue <= 3 && gestureRecognizer != screenEdgeRecognizer {
             return false
@@ -348,7 +349,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         return true
     }
     
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    open func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == screenEdgeRecognizer {
             return true
         }
@@ -362,7 +363,7 @@ open class WeeMenuController: UIViewController, UIGestureRecognizerDelegate {
         layerObj.shouldRasterize = false
         layerObj.shadowOpacity = opacity
         layerObj.shadowRadius = 1.5
-        layerObj.shadowColor = UIColor.black.cgColor
+        layerObj.shadowColor = shadowColor.cgColor
         layerObj.shadowOffset = CGSize(width: 0.0, height: 1.5)
     }
     
